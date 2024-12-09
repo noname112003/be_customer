@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/hotel")
+@RequestMapping("api/hotel")
 public class HotelController {
     @Autowired
     private HotelService hotelService;
