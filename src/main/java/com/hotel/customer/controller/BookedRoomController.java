@@ -1,8 +1,7 @@
 package com.hotel.customer.controller;
 
-
-
 import com.hotel.customer.model.dto.request.BookRoomRequest;
+import com.hotel.customer.model.dto.response.HistoryBooking;
 import com.hotel.customer.model.entity.Booked_room;
 import com.hotel.customer.model.entity.Customer;
 import com.hotel.customer.service.BookedRoomService;
