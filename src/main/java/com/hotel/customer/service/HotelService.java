@@ -10,4 +10,6 @@ import java.util.Date;
 public interface HotelService {
     Page<HotelResponse> searchHotelsWithAvailableRooms(Date checkin, Date checkout, String keyword, Pageable pageable);
 
+    Page<HotelResponse> searchDestinations(String keyword, Pageable pageable);
+
 }

@@ -2,6 +2,7 @@ package com.hotel.customer.service.impl;
 
 import com.hotel.customer.exception.HotelNotFoundException;
 import com.hotel.customer.exception.RoomNotFoundException;
+import com.hotel.customer.model.dto.response.HistoryBooking;
 import com.hotel.customer.model.entity.Booked_room;
 import com.hotel.customer.model.entity.Customer;
 import com.hotel.customer.model.entity.Hotel;
@@ -18,8 +19,12 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class BookedRoomServiceImpl implements BookedRoomService {
@@ -129,6 +134,32 @@ public class BookedRoomServiceImpl implements BookedRoomService {
 
     private boolean isRoomAvailable(Long roomId, Date checkinDate, Date checkoutDate) {
         return bookedRoomRepository.findConflictingBookings(roomId, checkinDate, checkoutDate).isEmpty();
+    }
+
+    @Override
+    public List<HistoryBooking> getHistoryByUserId(Long userId) {
+        List<Booked_room> bookedRooms = bookedRoomRepository.findByCustomerId(userId);
+
+        return bookedRooms.stream().map(bookedRoom -> {
+            // Tính số ngày đã ở
+            long durationInMillis = bookedRoom.getCheckoutDate().getTime() - bookedRoom.getCheckinDate().getTime();
+            long numberOfDays = TimeUnit.MILLISECONDS.toDays(durationInMillis);
+
+            // Tính tổng chi phí
+            BigDecimal roomPrice = bookedRoom.getRoom().getPrice();
+            BigDecimal totalCost = roomPrice.multiply(BigDecimal.valueOf(numberOfDays));
+
+            return HistoryBooking.builder()
+                    .id(bookedRoom.getId())
+                    .nameHotel(bookedRoom.getRoom().getHotel().getName())
+                    .roomType(bookedRoom.getRoom().getRoomType())
+                    .number(bookedRoom.getRoom().getNumber())
+                    .checkinDate(bookedRoom.getCheckinDate())
+                    .checkoutDate(bookedRoom.getCheckoutDate())
+                    .bookingDate(bookedRoom.getBookingDate())
+                    .totalCost(totalCost)
+                    .build();
+        }).collect(Collectors.toList());
     }
 
 

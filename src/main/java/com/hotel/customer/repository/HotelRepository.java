@@ -29,5 +29,12 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>, CrudReposit
                                                        @Param("keyword") String keyword,
                                                        Pageable pageable);
 
+    @Query("SELECT h FROM Hotel h")
+    Page<Hotel> findHotels(Pageable pageable);
+
+    @Query("SELECT h FROM Hotel h " +
+            "WHERE :keyword IS NULL OR LOWER(h.address) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<Hotel> findHotelsByAddress(String keyword, Pageable pageable);
+
 
 }

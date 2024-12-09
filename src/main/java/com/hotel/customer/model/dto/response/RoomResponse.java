@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
@@ -18,7 +19,7 @@ public class RoomResponse {
     private Long number;
     private String roomType;
     private String description;
-    private double price;
+    private BigDecimal price;
     private Long hotelId; // Nếu cần trả về thông tin khách sạn
     private List<String> imagePaths; // Giả sử bạn muốn trả về các đường dẫn của ảnh
 
